@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Vibration } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 
@@ -7,33 +7,33 @@ export default function App() {
   const [unread, setUnread] = useState(0);
   const [cnt, setCnt] = useState(0);
 
-  
+
   const handleAllRead = () => {
     setNotis([]);
     setUnread(0);
   };
 
-  
+
   const handleRead = (id) => {
-  let wasUnread = false;
+    let wasUnread = false;
 
-  setNotis(prev =>
-    prev.map(n => {
-      // si id es la notificacion presionada y no esta leida
-      if (n.id === id && !n.read) {
-        wasUnread = true; // detecta si realmente era no leida
-        return { ...n, read: true };
-      }
-      return n;
-    })
-  );
+    setNotis(prev =>
+      prev.map(n => {
+        // si id es la notificacion presionada y no esta leida
+        if (n.id === id && !n.read) {
+          wasUnread = true; // detecta si realmente era no leida
+          return { ...n, read: true };
+        }
+        return n;
+      })
+    );
 
-  if (wasUnread) {
-    setUnread(prev => Math.max(prev - 1, 0));
-  }
-};
+    if (wasUnread) {
+      setUnread(prev => Math.max(prev - 1, 0));
+    }
+  };
 
-  
+
   const renderItem = ({ item }) => (
     <View
       style={[
@@ -52,6 +52,7 @@ export default function App() {
   );
 
   useEffect(() => {
+
     const interval = setInterval(() => {
       setCnt(prev => {
         const newCnt = prev + 1;
@@ -63,6 +64,8 @@ export default function App() {
           read: false
         };
 
+        Vibration.vibrate(300);
+
         setNotis(prevNotis => [...prevNotis, newNoti]);
         setUnread(prev => prev + 1);
 
@@ -70,7 +73,11 @@ export default function App() {
       });
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      Vibration.cancel();
+    }
+
   }, []);
 
   return (
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 12,
     borderLeftWidth: 4,
-    elevation: 2, 
+    elevation: 2,
   },
   title: {
     fontSize: 18,
