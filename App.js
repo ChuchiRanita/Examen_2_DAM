@@ -15,14 +15,23 @@ export default function App() {
 
   
   const handleRead = (id) => {
-    setNotis(prev =>
-      prev.map(n =>
-        n.id === id ? { ...n, read: true } : n
-      )
-    );
+  let wasUnread = false;
 
+  setNotis(prev =>
+    prev.map(n => {
+      // si id es la notificacion presionada y no esta leida
+      if (n.id === id && !n.read) {
+        wasUnread = true; // detecta si realmente era no leida
+        return { ...n, read: true };
+      }
+      return n;
+    })
+  );
+
+  if (wasUnread) {
     setUnread(prev => Math.max(prev - 1, 0));
-  };
+  }
+};
 
   
   const renderItem = ({ item }) => (
