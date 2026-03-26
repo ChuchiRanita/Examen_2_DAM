@@ -7,11 +7,18 @@ export default function App() {
   const [unread, setUnread] = useState(0);
   const [cnt, setCnt] = useState(0);
 
-
-  const handleAllRead = () => {
+  //Borrar y marcar como leidas
+  const handleAllReadErease = () => {
     setNotis([]);
     setUnread(0);
   };
+  //Marcar como leidas
+  const handleAllRead = () => {
+    setUnread(0);
+    setNotis(prev =>
+      prev.map(n => ({ ...n, read: true }))
+    );
+  }
 
 
   const handleRead = (id) => {
@@ -33,7 +40,7 @@ export default function App() {
     }
   };
 
-
+  //Notiicaciones
   const renderItem = ({ item }) => (
     <View
       style={[
@@ -51,6 +58,7 @@ export default function App() {
     </View>
   );
 
+  //Notificaciones cada 5 segundos
   useEffect(() => {
 
     const interval = setInterval(() => {
@@ -98,10 +106,14 @@ export default function App() {
         keyExtractor={(item) => item.id}
         style={styles.list}
       />
-
+      {/*boton de borrar */}
       <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn} onPress={handleAllRead}>
+        <TouchableOpacity style={styles.btn} onPress={handleAllReadErease}>
           <Text style={styles.btnText}>Borrar todo</Text>
+        </TouchableOpacity>
+        {/*boton de marcar como leidas */}
+        <TouchableOpacity style={styles.btnAllRead} onPress={handleAllRead}>
+          <Text style={styles.btnText}>Marcar todas como leidas</Text>
         </TouchableOpacity>
       </View>
 
@@ -195,5 +207,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  btnAllRead: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
   },
 });
